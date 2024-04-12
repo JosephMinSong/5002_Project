@@ -45,7 +45,7 @@ class DataAnalysis():
         for line in f:
             line = line.strip()
             if self.is_cycle_incident(line):
-                
+                pass
 
     def is_cycle_incident(self, line):
         """
