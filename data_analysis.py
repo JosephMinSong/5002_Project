@@ -16,10 +16,8 @@ class DataAnalysis():
 
         # INJURY INFO
         # - Injury should probably have some corelation to 29, 30, 31
-        
-        # Could possibly group pieces of important data into a tuple and store
-        # 
 
+        # Could possibly group pieces of important data into a tuple and store
 
         # INDEX FOR EACH PIECE OF DATA
         # 12 = SEVERITY CODE
