@@ -3,9 +3,6 @@ import numpy as np
 from pmdarima.arima import auto_arima
 from dataframe import DataAnalysis as df
 
-# Assuming you have a DataFrame 'df' with columns 'date' and 'target_variable'
-# where 'date' is the datetime variable and 'target_variable' is what you want to predict.
-
 # Step 2: Prepare data
 df['date'] = pd.to_datetime(df.incident_dates)
 
