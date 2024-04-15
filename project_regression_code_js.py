@@ -1,11 +1,10 @@
 import pandas as pd
 import numpy as np
 from pmdarima.arima import auto_arima
-from dataframe import DataAnalysis
+from data_analysis import DataAnalysis
 import sys
 
-# 1) Where is dataframe coming from? I can't seem to find documentation on it
-            #rk: in my files i names your file dataframe
+
 # 2) You import DataAnalysis, which is the class that I've created. Did you mean to import that?
             # yes don't i need to import it in order to use x_values and y_values? 
             # ronne is confused on how to get those dataframes into here-- that's all i need
@@ -17,7 +16,7 @@ def main(file_name):
     df_instance = DataAnalysis(file_name)
     df_instance.analyze_data()
     # Step 2: Prepare data
-    df_instance['date'] = pd.to_datetime(df_instance.incident_dates)
+    # df_instance['date'] = pd.to_datetime(df_instance.incident_dates)
 
     # Step 3: Fit the regression model
     x = df_instance.x_values
@@ -25,7 +24,7 @@ def main(file_name):
 
     # Ordinary Least Squares regression
     model = auto_arima(y, exogenous=x, seasonal=False)
-    results = model.fit()
+    results = model.fit()  # needs y value
 
     # Step 4: Evaluate the model
     print(results.summary())
