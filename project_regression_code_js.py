@@ -5,7 +5,10 @@ from dataframe import DataAnalysis
 import sys
 
 # 1) Where is dataframe coming from? I can't seem to find documentation on it
+            #rk: in my files i names your file dataframe
 # 2) You import DataAnalysis, which is the class that I've created. Did you mean to import that?
+            # yes don't i need to import it in order to use x_values and y_values? 
+            # ronne is confused on how to get those dataframes into here-- that's all i need
 # 3) What are you trying to do with df_instance['date']? df_instance is a Class
 
 
