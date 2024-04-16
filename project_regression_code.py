@@ -1,20 +1,28 @@
-import pandas as pd
+import sys
 import numpy as np
-from pmdarima.arima import auto_arima
+import statsmodels.api as sm
 from dataframe import DataAnalysis
 
-# Step 1: Need to create instance of DataAnalysis
+
+class RegressionModel:
+    def __init__(self, x_values, y_values):
+        self.x_values = x_values
+        self.y_values = y_values
+    
+    def perform_regression(self):
+        X = sm.add_constant(self.x_values)
+        y = self.y_values
+        model = sm.OLS(y, X).fit()
+        return model.summary()
+
+
+file_name = sys.argv[1]
 df_instance = DataAnalysis(file_name)
 df_instance.analyze_data()
-# Step 2: Prepare data
-df_instance['date'] = pd.to_datetime(df_instance.incident_dates)
 
-# Step 3: Fit the regression model
-x = df_instance.x_values
-y = df_instance.y_values
+x_values = np.array(df_instance.x_values, dtype=float)
+y_values = np.array(df_instance.y_values, dtype=float)
 
-model = auto_arima(y, exogenous=x, seasonal=False) # Ordinary Least Squares regression
-results = model.fit()
-
-# Step 4: Evaluate the model
-print(results.summary())
+regression_model = RegressionModel(x_values, y_values)
+result = regression_model.perform_regression()
+print(result)
