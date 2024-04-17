@@ -6,14 +6,22 @@ class DataAnalysis():
     """
     DataAnalysis class that collects data from incident reports csv file
     For linear regression, use the following:
-        - lr_x_values and lr_y_values
+        - linr_x_values and linr_y_values
     For other regression, use the following:
-        - or_x_values and or_y_values
+        - logr_x_values and logr_y_values
     """
     def __init__(self, file_name):
         self.file_name = file_name
-        self.X_INPUT = []
-        self.Y_OUTPUT = []
+
+        # DATA FOR LINR
+        self.LINR_X_INPUT = []  # env data
+        self.LINR_Y_OUTPUT = []  # severity code
+
+        # DATA FOR LOGR
+        self.LOGR_X_INPUT = []  # env data
+        self.LOGR_Y_OUTPUT = []  # 0 or 1, based on fatality
+
+        # Dates
         self.DATES = []
 
         # Incident Counts
@@ -38,12 +46,12 @@ class DataAnalysis():
 
         # INJURY INFO
         # Injury indexes
-        self.inj_ind = 19
-        self.ser_inj_ind = 20
+        # self.inj_ind = 19
+        # self.ser_inj_ind = 20
         self.fatalities_ind = 21
         # Injury Counts
-        self.inj_count = 0
-        self.ser_inj_count = 0
+        # self.inj_count = 0
+        # self.ser_inj_count = 0
         self.fatalities_count = 0
 
         # ENVIRONMENT INFO
@@ -60,9 +68,6 @@ class DataAnalysis():
 
         self.light_conv_counter = 0
         self.light_dict = defaultdict()
-
-        # [[19, 20, 21, 29, 30, 31]] -> x input
-        # [12] -> y output
 
     def analyze_data(self):
         try:
@@ -81,16 +86,21 @@ class DataAnalysis():
                 line = line.split(',')
                 # Prepare all variables
                 severity_code = self.get_severity_code(line)  # 12
-                inj_data = self.get_inj_data(line)  # [19, 20, 21]
+                fatality_data = self.get_fatality_data(line)  # 21
                 env_data = self.get_environment_data(line)  # [29, 30, 31]
 
-                # Create x input data
-                x_input_array = inj_data + env_data
+                # Create logr_x input data -> 1 or 0, based on fatality
+                logr_x_input = 1 if fatality_data else 0
 
                 # Add all variables to appropriate collection structure
-                self.X_INPUT.append(x_input_array)
-                self.Y_OUTPUT.append(severity_code)
+                # For LINR
+                self.LINR_X_INPUT.append(env_data)
+                self.LINR_Y_OUTPUT.append(severity_code)
                 self.DATES.append(incident_date)
+
+                # For LOGR
+                self.LOGR_X_INPUT.append(env_data)
+                self.LOGR_Y_OUTPUT.append(logr_x_input)
 
     def is_cycle_incident(self, line):
         """
@@ -121,20 +131,16 @@ class DataAnalysis():
         self.sc_count_dict[sc] += 1  # Increase this sc count
         return sc
 
-    def get_inj_data(self, array):
+    def get_fatality_data(self, array):
         """
         Method to obtain injury info
         [Str] -> [Int, Int, Int]
         """
-        injuries = int(array[self.inj_ind])
-        serious_injuries = int(array[self.ser_inj_ind])
         fatalities = int(array[self.fatalities_ind])
 
-        self.inj_count += injuries  # Increase total minor inj count
-        self.ser_inj_count += serious_injuries  # Increase total ser inj count
         self.fatalities_count += fatalities  # Increase total fatal count
 
-        return [injuries, serious_injuries, fatalities]
+        return fatalities
 
     def get_environment_data(self, array):
         """
@@ -173,13 +179,21 @@ class DataAnalysis():
         return [weather, road_cond, light_cond]
 
     @property
-    def x_values(self):
-        return self.X_INPUT
+    def linr_x_values(self):
+        return self.LIN_X_INPUT
 
     @property
-    def y_values(self):
-        return self.Y_OUTPUT
+    def linr_y_values(self):
+        return self.LIN_Y_OUTPUT
 
     @property
     def incident_dates(self):
         return self.DATES
+
+    @property
+    def logr_x_values(self):
+        return self.LOGR_X_INPUT
+
+    @property
+    def logr_y_values(self):
+        return self.LOGR_Y_OUTPUT
