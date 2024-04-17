@@ -13,13 +13,16 @@ class DataAnalysis():
     def __init__(self, file_name):
         self.file_name = file_name
 
+        # DATA FOR X_INPUT
+        self.WEATHER = []
+        self.LIGHT = []
+        self.ROAD = []
+
         # DATA FOR LINR
-        self.LINR_X_INPUT = []  # env data
-        self.LINR_Y_OUTPUT = []  # severity code
+        self.LINR_Y_OUTPUT = []  # severity code [1, 2, 3]
 
         # DATA FOR LOGR
-        self.LOGR_X_INPUT = []  # env data
-        self.LOGR_Y_OUTPUT = []  # 0 or 1, based on fatality
+        self.LOGR_Y_OUTPUT = []  # 0 or 1, based on fatality [0, 1, 1]
 
         # Dates
         self.DATES = []
@@ -87,19 +90,21 @@ class DataAnalysis():
                 # Prepare all variables
                 severity_code = self.get_severity_code(line)  # 12
                 fatality_data = self.get_fatality_data(line)  # 21
-                env_data = self.get_environment_data(line)  # [29, 30, 31]
+                env_data = self.get_environment_data(line)  # [w, r, l]
 
                 # Create logr_x input data -> 1 or 0, based on fatality
                 logr_x_input = 1 if fatality_data else 0
 
                 # Add all variables to appropriate collection structure
+                self.WEATHER.append(env_data[0])
+                self.ROAD.append(env_data[1])
+                self.LIGHT.append(env_data[2])
+
                 # For LINR
-                self.LINR_X_INPUT.append(env_data)
                 self.LINR_Y_OUTPUT.append(severity_code)
                 self.DATES.append(incident_date)
 
                 # For LOGR
-                self.LOGR_X_INPUT.append(env_data)
                 self.LOGR_Y_OUTPUT.append(logr_x_input)
 
     def is_cycle_incident(self, line):
@@ -179,20 +184,24 @@ class DataAnalysis():
         return [weather, road_cond, light_cond]
 
     @property
-    def linr_x_values(self):
-        return self.LIN_X_INPUT
+    def weather_values(self):
+        return self.WEATHER
 
     @property
-    def linr_y_values(self):
-        return self.LIN_Y_OUTPUT
+    def light_values(self):
+        return self.LIGHT
+
+    @property
+    def road_values(self):
+        return self.ROAD
 
     @property
     def incident_dates(self):
         return self.DATES
 
     @property
-    def logr_x_values(self):
-        return self.LOGR_X_INPUT
+    def linr_y_values(self):
+        return self.LINR_Y_INPUT
 
     @property
     def logr_y_values(self):
