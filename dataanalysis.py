@@ -49,12 +49,12 @@ class DataAnalysis():
 
         # INJURY INFO
         # Injury indexes
-        # self.inj_ind = 19
-        # self.ser_inj_ind = 20
+        self.inj_ind = 19
+        self.ser_inj_ind = 20
         self.fatalities_ind = 21
         # Injury Counts
-        # self.inj_count = 0
-        # self.ser_inj_count = 0
+        self.inj_count = 0
+        self.ser_inj_count = 0
         self.fatalities_count = 0
 
         # ENVIRONMENT INFO
