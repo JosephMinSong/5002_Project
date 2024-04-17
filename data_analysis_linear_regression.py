@@ -3,6 +3,13 @@ from collections import defaultdict
 
 
 class DataAnalysis():
+    """
+    DataAnalysis class that collects data from incident reports csv file
+    For linear regression, use the following:
+        - lr_x_values and lr_y_values
+    For other regression, use the following:
+        - or_x_values and or_y_values
+    """
     def __init__(self, file_name):
         self.file_name = file_name
         self.X_INPUT = []
