@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 
 
-class DataAnalysis():
+class DataAnalysis:
     """
     DataAnalysis class that collects data from incident reports csv file
     For linear regression, use the following:
@@ -10,6 +10,7 @@ class DataAnalysis():
     For other regression, use the following:
         - logr_x_values and logr_y_values
     """
+
     def __init__(self, file_name):
         self.file_name = file_name
 
@@ -35,8 +36,8 @@ class DataAnalysis():
         self.NORM_LENGTH = 46
 
         # REGEX COMPILIERS
-        self.CYCLES_REGEX = re.compile(r'(Cycles)')
-        self.DATES_REGEX = re.compile(r'([0-9]{4}/[0-9]+/[0-9]+)')
+        self.CYCLES_REGEX = re.compile(r"(Cycles)")
+        self.DATES_REGEX = re.compile(r"([0-9]{4}/[0-9]+/[0-9]+)")
 
         # SEVERITY CODE INFO
         # Severity Code Indexes
@@ -45,7 +46,7 @@ class DataAnalysis():
         self.sc_desc_ind = 13
         # Severity Code Count and Dict
         self.sc_count_dict = defaultdict(lambda: 0)
-        self.sc_desc_dict = defaultdict(lambda: '')
+        self.sc_desc_dict = defaultdict(lambda: "")
 
         # INJURY INFO
         # Injury indexes
@@ -72,6 +73,8 @@ class DataAnalysis():
         self.light_conv_counter = 0
         self.light_dict = defaultdict()
 
+        self.environment_data = []  # store data
+
     def analyze_data(self):
         try:
             f = open(self.file_name, "r", encoding="utf-8")
@@ -86,11 +89,12 @@ class DataAnalysis():
                 self.cycle_inc_count += 1
                 incident_date = self.get_incident_date(line)
 
-                line = line.split(',')
+                line = line.split(",")
                 # Prepare all variables
                 severity_code = self.get_severity_code(line)  # 12
                 fatality_data = self.get_fatality_data(line)  # 21
                 env_data = self.get_environment_data(line)  # [w, r, l]
+                self.environment_data.append(env_data)
 
                 # Create logr_x input data -> 1 or 0, based on fatality
                 logr_x_input = 1 if fatality_data else 0
@@ -201,7 +205,7 @@ class DataAnalysis():
 
     @property
     def linr_y_values(self):
-        return self.LINR_Y_INPUT
+        return self.LINR_Y_OUTPUT
 
     @property
     def logr_y_values(self):
