@@ -5,6 +5,10 @@ from dataanalysis import DataAnalysis
 
 
 class RegressionModel:
+    """
+    A model for running regressions and reporting conditions based on traffic data
+    """
+
     def __init__(self, file_name):
         self.file_name = file_name
         self.x_values = None
@@ -12,7 +16,10 @@ class RegressionModel:
         self.df_instance = None  # Reference to the DataAnalysis instance
 
     def load_data(self):
-        if not self.df_instance:  # Load data only if it hasn't been loaded before
+        """
+        Loads and processes the data from the file
+        """
+        if not self.df_instance:
             self.df_instance = DataAnalysis(self.file_name)
             self.df_instance.analyze_data()
             self.y_values = np.array(self.df_instance.linr_y_values, dtype=float)
@@ -28,110 +35,96 @@ class RegressionModel:
             )
 
     def perform_regression(self):
-        self.load_data()  # Ensure data is loaded
+        """
+        Performs linear regression analysis on the loaded data.
+        Returns a summary of the regression model fit
+        """
+        self.load_data()
         X = sm.add_constant(self.x_values)
         y = self.y_values
         model = sm.OLS(y, X).fit()
         return model.summary()
 
     def report_fatalities_and_incidents(self):
-        self.load_data()  # Ensure data is loaded
+        """
+        Reports the number of fatalities and incidents
+        Along with the proportion of fatalities to incidents
+        """
+        self.load_data()
         total_fatalities = self.df_instance.fatalities_count
         total_incidents = self.df_instance.cycle_inc_count
+        proportion = total_fatalities / total_incidents
         print(f"The total number of fatalities: {total_fatalities}")
         print(f"Cycling incidents: {total_incidents}")
-        proportion = total_fatalities / total_incidents
         print("Proportion:", proportion)
 
-    def report_weather_conditions(self):
+    def report_conditions(self, condition_values, condition_names, condition_type):
+        """
+        Method to report conditions such as weather, road, and lighting
+        """
         self.load_data()
         total_incidents = self.df_instance.cycle_inc_count
-        weather_conditions = [
-            "Clear",
-            "Overcast",
-            "Unknown",
-            "Raining",
-            "Other",
-            "Snow",
-            "Sleet",
-            "Blank",
-            "Fog",
-            "Sand",
-            "Partly Cloudy",
-        ]
-        counts = [0] * len(weather_conditions)
+        counts = np.zeros(len(condition_names), dtype=int) # initializes count array
 
-        for weather_index in self.df_instance.weather_values:
-            if weather_index < len(counts):
-                counts[weather_index] += 1
+        for index in condition_values: # count occurences of each condition
+            if index < len(counts):
+                counts[index] += 1
 
-        print("Counts for each weather condition:")
-        for index, count in enumerate(counts):
-            print(f"{weather_conditions[index]}: {count}")
-
-        for index, count in enumerate(counts):
-            proportion = count / total_incidents
-            print(f"{weather_conditions[index]}: {count} ({proportion:.4f})")
-
-    def report_road_conditions(self):
-        self.load_data()
-        total_incidents = self.df_instance.cycle_inc_count
-        road_conditions = [
-            "Dry",
-            "Ice",
-            "Unknown",
-            "Wet",
-            "Standing Water",
-            "Snow",
-            "Other",
-            "Sand",
-            "Empty String",
-        ]
-        counts = [0] * len(road_conditions)
-
-        for road_index in self.df_instance.road_values:
-            if road_index < len(counts):
-                counts[road_index] += 1
-
-        print("Counts for each road condition:")
-        for index, count in enumerate(counts):
-            print(f"{road_conditions[index]}: {count}")
-
-        for index, count in enumerate(counts):
-            proportion = count / total_incidents
-            print(f"{road_conditions[index]}: {count} ({proportion:.4f})")
-
-    def report_light_conditions(self):
-        self.load_data()
-        total_incidents = self.df_instance.cycle_inc_count
-        light_conditions = [
-            "Daylight",
-            "Dark-Street Lights On",
-            "Dusk",
-            "Unknown",
-            "Dawn",
-            "Dark - Street Lights Off",
-            "Dark - No Street Lights",
-            "Other",
-            "Empty String",
-            "Dark - Unknown Lighting",
-        ]
-        counts = [0] * len(light_conditions)
-
-        for light_index in self.df_instance.light_values:
-            if light_index < len(counts):
-                counts[light_index] += 1
-
-        print("Counts for each lighting condition:")
-        for index, count in enumerate(counts):
-            proportion = count / total_incidents
-            print(f"{light_conditions[index]}: {count} ({proportion:.4f})")
+        print(f"\nCounts and Proportions for {condition_type} Conditions:")
+        for name, count in zip(condition_names, counts):
+            proportion = count / total_incidents if total_incidents else 0
+            print(f"{name}: {count} ({proportion:.4f})")
 
 
 file_name = sys.argv[1]
 regression_model = RegressionModel(file_name)
-regression_model.report_fatalities_and_incidents()
 print(regression_model.perform_regression())
-regression_model.report_weather_conditions()  # Call the method to print environment data
-regression_model.report_road_conditions()
-regression_model.report_light_conditions()
+print(regression_model.report_fatalities_and_incidents())
+regression_model.report_conditions(
+    regression_model.df_instance.weather_values,
+    [
+        "Clear",
+        "Overcast",
+        "Unknown",
+        "Raining",
+        "Other",
+        "Snow",
+        "Sleet",
+        "Blank",
+        "Fog",
+        "Sand",
+        "Partly Cloudy",
+    ],
+    "Weather",
+)
+regression_model.report_conditions(
+    regression_model.df_instance.road_values,
+    [
+        "Dry",
+        "Ice",
+        "Unknown",
+        "Wet",
+        "Standing Water",
+        "Snow",
+        "Other",
+        "Sand",
+        "Empty String",
+    ],
+    "Road",
+)
+regression_model.report_conditions(
+    regression_model.df_instance.light_values,
+    [
+        "Daylight",
+        "Dark-Street Lights On",
+        "Dusk",
+        "Unknown",
+        "Dawn",
+        "Dark - Street Lights Off",
+        "Dark - No Street Lights",
+        "Other",
+        "Empty String",
+        "Dark - Unknown Lighting",
+    ],
+    "Light",
+)
