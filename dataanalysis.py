@@ -164,6 +164,7 @@ class DataAnalysis:
         weather = array[self.weather_ind + diff]  # Get weather string
         if weather in self.weather_dict:
             weather = self.weather_dict[weather]  # Replace weather with code
+
         else:
             # Establish this weather with a code
             self.weather_dict[weather] = self.weather_conv_counter

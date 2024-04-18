@@ -43,14 +43,49 @@ class RegressionModel:
         proportion = total_fatalities / total_incidents
         print("Proportion:", proportion)
 
-    def report_environment(self):
+    def report_raining(self):
         self.load_data()
-        for data in self.df_instance.environment_data:
-            print("Weather:", data[0], "Road:", data[1], "Light:", data[2])
+        clear = 0
+        overcast = 0
+        unknown = 0
+        raining = 0
+        other = 0
+        snow = 0
+        sleet = 0
+        fog = 0
+        sand = 0
+        partly_cloudy = 0
+        total_incidents = self.df_instance.cycle_inc_count
+        
+        for i in self.df_instance.weather_values:
+            if i == 0:
+                clear += 1
+            if i == 1:
+                overcast += 1
+            if i == 2:
+                unknown += 1
+            if i == 3:
+                raining += 1
+            if i == 4:
+                other += 1
+            if i == 5:
+                snow += 1
+            if i == 6:
+                sleet += 1
+            if i == 8:
+                fog += 1
+            if i == 9:
+                sand += 1
+            if i == 10:
+                partly_cloudy += 1
+
+        print(raining)
+        proportion = raining / total_incidents
+        print(proportion)
 
 
 file_name = sys.argv[1]
 regression_model = RegressionModel(file_name)
 regression_model.report_fatalities_and_incidents()
 print(regression_model.perform_regression())
-regression_model.report_environment()  # Call the method to print environment data
+regression_model.report_raining()  # Call the method to print environment data
