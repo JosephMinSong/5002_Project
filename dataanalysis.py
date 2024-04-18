@@ -73,7 +73,7 @@ class DataAnalysis:
         self.light_conv_counter = 0
         self.light_dict = defaultdict()
 
-        self.environment_data = []  # store data
+        self.environment_data = []  # Jordan Added testing currently
 
     def analyze_data(self):
         try:
@@ -94,7 +94,9 @@ class DataAnalysis:
                 severity_code = self.get_severity_code(line)  # 12
                 fatality_data = self.get_fatality_data(line)  # 21
                 env_data = self.get_environment_data(line)  # [w, r, l]
-                self.environment_data.append(env_data)
+                self.environment_data.append(
+                    env_data
+                )  # Added by Jordan testing currently
 
                 # Create logr_x input data -> 1 or 0, based on fatality
                 logr_x_input = 1 if fatality_data else 0
