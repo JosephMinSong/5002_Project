@@ -43,7 +43,7 @@ class RegressionModel:
         proportion = total_fatalities / total_incidents
         print("Proportion:", proportion)
 
-    def report_raining(self):
+    def report_weather_conditions(self):
         self.load_data()
         clear = 0
         overcast = 0
@@ -56,7 +56,7 @@ class RegressionModel:
         sand = 0
         partly_cloudy = 0
         total_incidents = self.df_instance.cycle_inc_count
-        
+
         for i in self.df_instance.weather_values:
             if i == 0:
                 clear += 1
@@ -79,13 +79,77 @@ class RegressionModel:
             if i == 10:
                 partly_cloudy += 1
 
-        print(raining)
-        proportion = raining / total_incidents
-        print(proportion)
+        # print(raining)
+        # proportion = raining / total_incidents
+        # print(proportion)
+
+    def report_road_conditions(self):
+        dry = 0
+        ice = 0
+        unknown = 0
+        wet = 0
+        standing_water = 0
+        snow = 0
+        other = 0
+        sand = 0
+
+        print(self.df_instance.road_dict)
+
+        for i in self.df_instance.road_dict:
+            if i == 0:
+                dry += 1
+            if i == 1:
+                ice += 1
+            if i == 2:
+                unknown += 1
+            if i == 3:
+                wet += 1
+            if i == 4:
+                standing_water += 1
+            if i == 5:
+                snow += 1
+            if i == 6:
+                other += 1
+            if i == 7:
+                sand += 1
+        print(dry)
+
+    def report_light_conditions(self):
+        daylight = 0
+        street_light = 0
+        dusk = 0
+        unknown = 0
+        dawn = 0
+        dark_sl_off = 0
+        dark_no_sl = 0
+        other = 0
+        dark_unknown = 0
+        for i in self.df_instance.light_dict:
+            if i == 0:
+                daylight += 1
+            if i == 1:
+                street_light += 1
+            if i == 2:
+                dusk += 1
+            if i == 3:
+                unknown += 1
+            if i == 4:
+                dawn += 1
+            if i == 5:
+                dark_sl_off += 1
+            if i == 6:
+                dark_no_sl += 1
+            if i == 7:
+                other += 1
+            if i == 8:
+                dark_unknown += 1
+        print(self.df_instance.light_dict)
 
 
 file_name = sys.argv[1]
 regression_model = RegressionModel(file_name)
 regression_model.report_fatalities_and_incidents()
 print(regression_model.perform_regression())
-regression_model.report_raining()  # Call the method to print environment data
+regression_model.report_weather_conditions()  # Call the method to print environment data
+regression_model.report_road_conditions()
+regression_model.report_light_conditions()
