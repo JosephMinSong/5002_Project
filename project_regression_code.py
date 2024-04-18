@@ -45,105 +45,87 @@ class RegressionModel:
 
     def report_weather_conditions(self):
         self.load_data()
-        clear = 0
-        overcast = 0
-        unknown = 0
-        raining = 0
-        other = 0
-        snow = 0
-        sleet = 0
-        fog = 0
-        sand = 0
-        partly_cloudy = 0
         total_incidents = self.df_instance.cycle_inc_count
+        weather_conditions = [
+            "Clear",
+            "Overcast",
+            "Unknown",
+            "Raining",
+            "Other",
+            "Snow",
+            "Sleet",
+            "Blank",
+            "Fog",
+            "Sand",
+            "Partly Cloudy",
+        ]
+        counts = [0] * len(weather_conditions)
 
-        for i in self.df_instance.weather_values:
-            if i == 0:
-                clear += 1
-            if i == 1:
-                overcast += 1
-            if i == 2:
-                unknown += 1
-            if i == 3:
-                raining += 1
-            if i == 4:
-                other += 1
-            if i == 5:
-                snow += 1
-            if i == 6:
-                sleet += 1
-            if i == 8:
-                fog += 1
-            if i == 9:
-                sand += 1
-            if i == 10:
-                partly_cloudy += 1
+        for weather_index in self.df_instance.weather_values:
+            if weather_index < len(counts):
+                counts[weather_index] += 1
 
-        # print(raining)
-        # proportion = raining / total_incidents
-        # print(proportion)
+        print("Counts for each weather condition:")
+        for index, count in enumerate(counts):
+            print(f"{weather_conditions[index]}: {count}")
+
+        for index, count in enumerate(counts):
+            proportion = count / total_incidents
+            print(f"{weather_conditions[index]}: {count} ({proportion:.4f})")
 
     def report_road_conditions(self):
-        dry = 0
-        ice = 0
-        unknown = 0
-        wet = 0
-        standing_water = 0
-        snow = 0
-        other = 0
-        sand = 0
+        self.load_data()
+        total_incidents = self.df_instance.cycle_inc_count
+        road_conditions = [
+            "Dry",
+            "Ice",
+            "Unknown",
+            "Wet",
+            "Standing Water",
+            "Snow",
+            "Other",
+            "Sand",
+            "Empty String",
+        ]
+        counts = [0] * len(road_conditions)
 
-        print(self.df_instance.road_dict)
+        for road_index in self.df_instance.road_values:
+            if road_index < len(counts):
+                counts[road_index] += 1
 
-        for i in self.df_instance.road_dict:
-            if i == 0:
-                dry += 1
-            if i == 1:
-                ice += 1
-            if i == 2:
-                unknown += 1
-            if i == 3:
-                wet += 1
-            if i == 4:
-                standing_water += 1
-            if i == 5:
-                snow += 1
-            if i == 6:
-                other += 1
-            if i == 7:
-                sand += 1
-        print(dry)
+        print("Counts for each road condition:")
+        for index, count in enumerate(counts):
+            print(f"{road_conditions[index]}: {count}")
+
+        for index, count in enumerate(counts):
+            proportion = count / total_incidents
+            print(f"{road_conditions[index]}: {count} ({proportion:.4f})")
 
     def report_light_conditions(self):
-        daylight = 0
-        street_light = 0
-        dusk = 0
-        unknown = 0
-        dawn = 0
-        dark_sl_off = 0
-        dark_no_sl = 0
-        other = 0
-        dark_unknown = 0
-        for i in self.df_instance.light_dict:
-            if i == 0:
-                daylight += 1
-            if i == 1:
-                street_light += 1
-            if i == 2:
-                dusk += 1
-            if i == 3:
-                unknown += 1
-            if i == 4:
-                dawn += 1
-            if i == 5:
-                dark_sl_off += 1
-            if i == 6:
-                dark_no_sl += 1
-            if i == 7:
-                other += 1
-            if i == 8:
-                dark_unknown += 1
-        print(self.df_instance.light_dict)
+        self.load_data()
+        total_incidents = self.df_instance.cycle_inc_count
+        light_conditions = [
+            "Daylight",
+            "Dark-Street Lights On",
+            "Dusk",
+            "Unknown",
+            "Dawn",
+            "Dark - Street Lights Off",
+            "Dark - No Street Lights",
+            "Other",
+            "Empty String",
+            "Dark - Unknown Lighting",
+        ]
+        counts = [0] * len(light_conditions)
+
+        for light_index in self.df_instance.light_values:
+            if light_index < len(counts):
+                counts[light_index] += 1
+
+        print("Counts for each lighting condition:")
+        for index, count in enumerate(counts):
+            proportion = count / total_incidents
+            print(f"{light_conditions[index]}: {count} ({proportion:.4f})")
 
 
 file_name = sys.argv[1]
