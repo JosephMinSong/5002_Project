@@ -81,7 +81,6 @@ class DataAnalysis():
             self.total_count += 1
             if self.is_cycle_incident(line):
                 self.cycle_inc_count += 1
-                incident_date = self.get_incident_date(line)
                 env_data = self.get_environment_data(split_line)
 
                 # Prepare all variables
@@ -98,7 +97,6 @@ class DataAnalysis():
 
                 # For LINR
                 self.LINR_Y_OUTPUT.append(severity_code)
-                self.DATES.append(incident_date)
 
                 # For LOGR
                 self.LOGR_Y_OUTPUT.append(logr_x_input)
