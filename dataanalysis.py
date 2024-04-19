@@ -5,15 +5,11 @@ from collections import defaultdict
 class DataAnalysis():
     """
     DataAnalysis class that collects data from incident reports csv file
-    For linear regression, use the following:
-        - linr_x_values and linr_y_values
-    For other regression, use the following:
-        - logr_x_values and logr_y_values
     """
     def __init__(self, file_name):
         self.file_name = file_name
 
-        # DATA FOR X_INPUT
+        # ENV DATA
         self.WEATHER = []
         self.LIGHT = []
         self.ROAD = []
@@ -81,16 +77,16 @@ class DataAnalysis():
 
         for line in f:
             line = line.strip()
+            split_line = line.split(',')
             self.total_count += 1
             if self.is_cycle_incident(line):
                 self.cycle_inc_count += 1
                 incident_date = self.get_incident_date(line)
+                env_data = self.get_environment_data(split_line)
 
-                line = line.split(',')
                 # Prepare all variables
-                severity_code = self.get_severity_code(line)  # 12
-                fatality_data = self.get_fatality_data(line)  # 21
-                env_data = self.get_environment_data(line)  # [w, r, l]
+                severity_code = self.get_severity_code(split_line)  # 12
+                fatality_data = self.get_fatality_data(split_line)  # 21
 
                 # Create logr_x input data -> 1 or 0, based on fatality
                 logr_x_input = 1 if fatality_data else 0
