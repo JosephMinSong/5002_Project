@@ -2,10 +2,11 @@ import re
 from collections import defaultdict
 
 
-class DataAnalysis():
+class DataAnalysis:
     """
     DataAnalysis class that collects data from incident reports csv file
     """
+
     def __init__(self, file_name):
         self.file_name = file_name
 
@@ -31,8 +32,8 @@ class DataAnalysis():
         self.NORM_LENGTH = 46
 
         # REGEX COMPILIERS
-        self.CYCLES_REGEX = re.compile(r'(Cycles)')
-        self.DATES_REGEX = re.compile(r'([0-9]{4}/[0-9]+/[0-9]+)')
+        self.CYCLES_REGEX = re.compile(r"(Cycles)")
+        self.DATES_REGEX = re.compile(r"([0-9]{4}/[0-9]+/[0-9]+)")
 
         # SEVERITY CODE INFO
         # Severity Code Indexes
@@ -41,7 +42,7 @@ class DataAnalysis():
         self.sc_desc_ind = 13
         # Severity Code Count and Dict
         self.sc_count_dict = defaultdict(lambda: 0)
-        self.sc_desc_dict = defaultdict(lambda: '')
+        self.sc_desc_dict = defaultdict(lambda: "")
 
         # INJURY INFO
         # Injury indexes
@@ -77,7 +78,7 @@ class DataAnalysis():
 
         for line in f:
             line = line.strip()
-            split_line = line.split(',')
+            split_line = line.split(",")
             self.total_count += 1
             if self.is_cycle_incident(line):
                 self.cycle_inc_count += 1
