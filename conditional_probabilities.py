@@ -113,6 +113,20 @@ def naive_bayes_classification(df):
         print("\n")
 
 
+def extract_data(df):
+    total_days = df["INCDATE"].nunique()
+
+    total_bike_crashes = len(df[df["COLLISIONTYPE"].str.contains("Cycle", na=False)])
+    rainy_days_df = df[df["WEATHER"] == "Raining"]
+
+    total_rainy_days = rainy_days_df["INCDATE"].nunique()
+
+    bike_crashes_on_rainy_days = len(
+        rainy_days_df[rainy_days_df["COLLISIONTYPE"].str.contains("Cycle", na=False)]
+    )
+    return total_days, total_bike_crashes, total_rainy_days, bike_crashes_on_rainy_days
+
+
 def main():
     filename = "collisions.csv"  # Path to the CSV file containing collision data
     df = pd.read_csv(filename)
@@ -120,6 +134,33 @@ def main():
     calculate_conditional_probabilities(weather_data, road_data, light_data)
     bicycle_df = df[df["COLLISIONTYPE"].str.contains("Cycle", na=False)]
     naive_bayes_classification(bicycle_df)
+    total_days, total_bike_crashes, total_rainy_days, bike_crashes_on_rainy_days = (
+        extract_data(df)
+    )
+    print("Total days:", total_days)
+    print("Total bike crashes:", total_bike_crashes)
+    print("Total rainy days:", total_rainy_days)
+    print("Bike crashes on rainy days:", bike_crashes_on_rainy_days)
+
+    p_bike_crash_with_rain = bike_crashes_on_rainy_days / total_rainy_days
+    p_rain = total_rainy_days / total_days
+    p_bike_crash = total_bike_crashes / total_days
+
+    p_rain_given_bike_crash = p_bike_crash_with_rain * p_bike_crash
+
+    print("Calculate P(Bike Crash | Rain)")
+    print(f"P(Bike Crash | Rain) = {bike_crashes_on_rainy_days} / {total_rainy_days}")
+
+    print("Calculate P(Rain")
+    print(f"P(Rain) = {total_rainy_days} / {total_days} = {p_rain}")
+
+    print("Calculate P(Bike Crash)")
+    print(f"P(Bike Crash = {total_bike_crashes} / {total_days} = {p_bike_crash})")
+
+    print("Apply Bayes' Theorem")
+    print(
+        f"P(Rain | Bike Crash) = (P(Bike Crash | Rain) * P(Bike Crash / P(Rain) = {p_rain_given_bike_crash}))"
+    )
 
 
 main()
