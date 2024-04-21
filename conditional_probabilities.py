@@ -151,7 +151,7 @@ def main():
     print("Calculate P(Bike Crash | Rain)")
     print(f"P(Bike Crash | Rain) = {bike_crashes_on_rainy_days} / {total_rainy_days}")
 
-    print("Calculate P(Rain")
+    print("Calculate P(Rain)")
     print(f"P(Rain) = {total_rainy_days} / {total_days} = {p_rain}")
 
     print("Calculate P(Bike Crash)")
