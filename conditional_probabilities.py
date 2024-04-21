@@ -1,9 +1,13 @@
 import pandas as pd
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB, ComplementNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
+import warnings
+from sklearn.exceptions import UndefinedMetricWarning
+
+warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
 
 
 def calculate_conditional_probabilities(weather_data, road_data, light_data):
@@ -55,6 +59,13 @@ def load_and_prepare_data(filename):
 
 def naive_bayes_classification(df):
 
+    models = {
+        "Multinomial": MultinomialNB(),
+        "Gaussian": GaussianNB(),
+        "Bernoulli": BernoulliNB(),
+        "Complement": ComplementNB(),
+    }
+
     # one-hot encode categorical variables
     weather_encoded = pd.get_dummies(df["WEATHER"])
     road_encoded = pd.get_dummies(df["ROADCOND"])
@@ -86,12 +97,20 @@ def naive_bayes_classification(df):
     # print classification report with zero_division set to 0 to handle undefined metrics
     class_report = classification_report(Y_test, Y_predictions, zero_division=0)
 
-    print("Naive Bayes Classifier Results:")
-    print("Accuracy", accuracy)
-    print("Confusion Matrix:")
-    print(conf_matrix)
-    print("Classification Report:")
-    print(class_report)
+    for model_name, model in models.items():
+        model.fit(X_train, Y_train)
+        Y_predictions = model.predict(X_test)
+        accuracy = accuracy_score(Y_test, Y_predictions)
+        conf_matrix = confusion_matrix(Y_test, Y_predictions)
+        class_report = classification_report(Y_test, Y_predictions)
+
+        print(f"{model_name} Naive Bayes Classifier Results:")
+        print("Accuracy", accuracy)
+        print("Confusion Matrix:")
+        print(conf_matrix)
+        print("Classification Report:")
+        print(class_report)
+        print("\n")
 
 
 def main():
