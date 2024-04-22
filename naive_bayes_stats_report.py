@@ -3,9 +3,21 @@ from naive_bayes_stats import DataAnalysis
 from collections import defaultdict
 
 
+def sort_dictionary(dictionary):
+    return sorted(dictionary.items(),
+                  key=lambda x: x[1],
+                  reverse=True)
+
+
 def bayes_calculation(p_a1_b1, p_a1_b2, b1, b2):
     numerator = p_a1_b1 * b1
     denominator = (p_a1_b1 * b1) + (p_a1_b2 * b2)
+    return numerator/denominator
+
+
+def naive_bayes_calculation(p_a1_b1, b1, a1):
+    numerator = p_a1_b1 * b1
+    denominator = a1
     return numerator/denominator
 
 
@@ -24,11 +36,24 @@ def main(file_name):
         light_probs
     ]
 
+    order = [
+        "Conditional Environment Probabilities",
+        "Conditional Weather Probabilities",
+        "Conditional Road Condition Probabilities",
+        "Conditional Light Condition Probabilities"
+    ]
+
     # CONVERTERS
     env_set_converter = d_a.env_converter
     weather_converter = d_a.weather_cond_converter
     road_converter = d_a.road_cond_converter
     light_converter = d_a.light_cond_converter
+    converters = [
+        env_set_converter,
+        weather_converter,
+        road_converter,
+        light_converter
+    ]
 
     # CONSTANTS
     total_incidents_overall = d_a.total
@@ -79,10 +104,16 @@ def main(file_name):
             p_a1_b1 = cycle_env_list[i][key]/total_cycling_incidents
             p_a1_b2 = n_cycle_env_list[i][key]/total_no_cycle_incidents
             prob = bayes_calculation(p_a1_b1, p_a1_b2, B1, B2)
-            probs[i][key] = prob
+            if prob:
+                probs[i][key] = prob
 
-    for prob in probs:
-        print(prob)
+    for i in range(len(probs)):
+        sorted_probs = sort_dictionary(probs[i])
+        print(order[i])
+        for entry in sorted_probs:
+            condition = converters[i][entry[0]]
+            probability = entry[1] * 100
+            print(f"{condition}: {probability}")
 
 
 main(sys.argv[1])
